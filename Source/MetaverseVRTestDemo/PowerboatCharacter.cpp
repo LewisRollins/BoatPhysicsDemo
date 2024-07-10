@@ -47,11 +47,20 @@ void APowerboatCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
     // Lerp the rotation rate towards zero when no input is received
+
     CurrentRotationRate = FMath::Lerp(CurrentRotationRate, 0.0f, LerpSpeed * DeltaTime);
 
-    // Rotate the character based on the lerped rotation rate
-    AddControllerYawInput(CurrentRotationRate * DeltaTime);
+    // Get the actor's current velocity
+    FVector ActorVelocity = GetVelocity();
 
+    // Calculate the speed of the actor
+    float Speed = ActorVelocity.Size();
+
+    // Check if the speed exceeds the minimum turning speed
+    if (Speed > MinimumTurningSpeed)
+    {
+        AddControllerYawInput(CurrentRotationRate * DeltaTime);// Rotate the character based on the lerped rotation rate
+    }
 }
 
 // Called to bind functionality to input
@@ -60,18 +69,9 @@ void APowerboatCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     // Bind movement and rotation axis inputs
-    PlayerInputComponent->BindAxis("MoveForward", this, &APowerboatCharacter::MoveForward);
+    //PlayerInputComponent->BindAxis("MoveForward", this, &APowerboatCharacter::MoveForward);
     PlayerInputComponent->BindAxis("Turn", this, &APowerboatCharacter::Turn);
 
-}
-
-void APowerboatCharacter::MoveForward(float Value)
-{
-    // Move forward/backward based on input value
-    if (Value != 0.0f)
-    {
-        AddMovementInput(GetActorForwardVector(), Value);
-    }
 }
 
 void APowerboatCharacter::Turn(float Value)

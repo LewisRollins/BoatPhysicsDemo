@@ -37,7 +37,6 @@ public:
 	class UStaticMeshComponent* BoatMesh; // Static mesh component for boat
 
 private:
-	void MoveForward(float Value);
 	void Turn(float Value);
 
 public:
@@ -47,6 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
 	float LerpSpeed = 1.0f; // Speed of lerping, adjust as needed
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boat")
+	float MinimumTurningSpeed = 50.f; // Example minimum speed required for effective turning
 
 private:
 	float CurrentRotationRate = 0.0f; // Current rotation rate
