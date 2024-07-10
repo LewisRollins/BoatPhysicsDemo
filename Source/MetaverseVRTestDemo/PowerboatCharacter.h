@@ -26,4 +26,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Expose the static mesh component for blueprint editing
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UStaticMeshComponent* BoatMesh; // Static mesh component for boat
+
+private:
+	void MoveForward(float Value);
+	void Turn(float Value);
+
 };
