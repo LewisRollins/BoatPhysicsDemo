@@ -40,4 +40,15 @@ private:
 	void MoveForward(float Value);
 	void Turn(float Value);
 
+public:
+	// Rotation rate variables
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
+	float MaxTurnRate = 35.0f; // Maximum turn rate in degrees per second
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character")
+	float LerpSpeed = 1.0f; // Speed of lerping, adjust as needed
+
+private:
+	float CurrentRotationRate = 0.0f; // Current rotation rate
+
 };

@@ -17,7 +17,7 @@ APowerboatCharacter::APowerboatCharacter()
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
     SpringArm->TargetArmLength = 300.0f;
-    SpringArm->bUsePawnControlRotation = true;
+    SpringArm->bUsePawnControlRotation = false;
 
     // Create a camera and attach it to the spring arm
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -46,6 +46,12 @@ void APowerboatCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    // Lerp the rotation rate towards zero when no input is received
+    CurrentRotationRate = FMath::Lerp(CurrentRotationRate, 0.0f, LerpSpeed * DeltaTime);
+
+    // Rotate the character based on the lerped rotation rate
+    AddControllerYawInput(CurrentRotationRate * DeltaTime);
+
 }
 
 // Called to bind functionality to input
@@ -70,9 +76,18 @@ void APowerboatCharacter::MoveForward(float Value)
 
 void APowerboatCharacter::Turn(float Value)
 {
-    // Rotate left/right based on input value
-    if (Value != 0.0f)
+    // Calculate the desired rotation rate based on input
+    float DesiredRotationRate = Value * MaxTurnRate;
+
+    // Smoothly lerp the rotation rate towards the desired rotation rate
+    CurrentRotationRate = FMath::Lerp(CurrentRotationRate, DesiredRotationRate, LerpSpeed * GetWorld()->GetDeltaSeconds());
+
+    // Alternatively, to directly set rotation without lerping:
+    // AddControllerYawInput(Value * MaxTurnRate * GetWorld()->GetDeltaSeconds());
+
+    // If input value is zero, slowly lerp rotation rate to zero
+    if (FMath::IsNearlyZero(Value))
     {
-        AddControllerYawInput(Value);
+        CurrentRotationRate = FMath::Lerp(CurrentRotationRate, 0.0f, LerpSpeed * GetWorld()->GetDeltaSeconds());
     }
 }
